@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WAY PAY - Sistem Pencatatan Digital</title>
+    
+    <!-- ========================================== -->
+    <!-- KODE UNTUK MENGUBAH WEB JADI APLIKASI      -->
+    <!-- ========================================== -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="WAY PAY">
+    <meta name="apple-mobile-web-app-title" content="WAY PAY">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="msapplication-navbutton-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">
+    
+    <!-- ICON APLIKASI (Pastikan ada file 1.png di folder yang sama) -->
+    <link rel="icon" type="image/png" sizes="512x512" href="1.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="1.png">
+    <!-- ========================================== -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -491,24 +509,18 @@
 
     // --- NAVIGATION SPA LOGIC ---
     function switchPage(pageId) {
-        // Hide all pages
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        // Remove active state from mobile nav
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        // Remove active state from desktop tabs
         document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
         
-        // Show target page
         document.getElementById(pageId).classList.add('active');
         
-        // Update nav active states
         const targetNavId = 'nav-' + pageId.replace('page-', '');
         const targetTabId = 'd-tab-' + pageId.replace('page-', '');
         
         if(document.getElementById(targetNavId)) document.getElementById(targetNavId).classList.add('active');
         if(document.getElementById(targetTabId)) document.getElementById(targetTabId).classList.add('active');
         
-        // Auto refresh specific views
         if(pageId === 'page-history') renderHistory();
         if(pageId === 'page-print') renderPrintList();
         
@@ -561,7 +573,6 @@
     // --- DASHBOARD ---
     const updateDashboard = () => {
         const now = new Date();
-        // Month Logic 18-17
         let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
         let sM = d >= 18 ? m : m - 1, sY = y;
         if(sM < 0) { sM = 11; sY--; }
@@ -694,7 +705,6 @@
             setTodayDate();
             refreshAllData();
             
-            // Ask to print immediately
             if(confirm("Transaksi berhasil disimpan. Cetak struk sekarang?")) {
                 switchPage('page-print');
                 openPrintPreview(trxData.id);
@@ -743,7 +753,7 @@
         }
     };
 
-    // --- PRINT PREVIEW (INDOMARET STYLE) ---
+    // --- PRINT PREVIEW ---
     const formatAddressBreak = (text) => text.replace(/\n/g, '<br>');
 
     const openPrintPreview = (id) => {
@@ -751,7 +761,6 @@
         if(!trx) return;
         currentPrintTrx = trx;
 
-        // Construct HTML for Modal Preview
         const previewHTML = `
             <div class="rp-center rp-bold rp-title">${appSettings.storeName}</div>
             <div class="rp-center rp-address">${formatAddressBreak(appSettings.storeAddress)}</div>
@@ -792,7 +801,6 @@
         document.getElementById('receipt-preview-content').innerHTML = previewHTML;
         document.getElementById('print-modal').classList.add('active');
 
-        // Setup the actual hidden print area
         document.getElementById('pr-store').textContent = appSettings.storeName;
         document.getElementById('pr-address').innerHTML = formatAddressBreak(appSettings.storeAddress);
         document.getElementById('pr-date').textContent = formatDateStr(trx.date);
@@ -809,7 +817,6 @@
         currentPrintTrx = null;
     };
 
-    // Execute Print
     document.getElementById('btn-do-print').addEventListener('click', () => {
         window.print();
         closePrintModal();
