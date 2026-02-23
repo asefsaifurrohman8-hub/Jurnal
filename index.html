@@ -5,28 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WAY PAY - Sistem Pencatatan Digital</title>
     
-    <!-- ========================================== -->
-    <!-- KODE UNTUK MENGUBAH WEB JADI APLIKASI      -->
-    <!-- ========================================== -->
+    <!-- PWA Setup dengan Path yang Benar -->
+    <link rel="manifest" href="/Jurnal/manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="apple-touch-icon" href="/Jurnal/1.png">
+    
+    <!-- Fallback Meta PWA Safari -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="WAY PAY">
     <meta name="apple-mobile-web-app-title" content="WAY PAY">
-    <meta name="theme-color" content="#4F46E5">
-    <meta name="msapplication-navbutton-color" content="#4F46E5">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="msapplication-starturl" content="/">
+    <meta name="msapplication-navbutton-color" content="#4F46E5">
     
-    <!-- ICON APLIKASI (Pastikan ada file 1.png di folder yang sama) -->
-    <link rel="icon" type="image/png" sizes="512x512" href="1.png">
-    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="1.png">
-    <!-- ========================================== -->
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* WAY PAY Brand Colors */
             --primary: #4F46E5;
             --primary-dark: #3730A3;
             --primary-light: #E0E7FF;
@@ -46,32 +40,23 @@
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
             --shadow-float: 0 -4px 20px rgba(0, 0, 0, 0.08);
-            
-            /* Safe Area for Notches */
             --safe-bottom: max(50px, env(safe-area-inset-bottom));
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom)); }
         
-        /* Typography */
         h1, h2, h3, h4 { font-weight: 600; }
-        
-        /* Layout */
         .app-container { max-width: 800px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* Header */
         header { background: var(--surface); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
         .logo-area { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
         .logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary), #818CF8); color: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
         
-        /* Pages */
         .page { display: none; padding: 20px; flex-direction: column; gap: 20px; animation: fadeIn 0.3s ease; }
         .page.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Dashboard Cards */
         .dashboard-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: var(--radius-lg); padding: 24px; color: white; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
         .dashboard-hero::after { content: ''; position: absolute; right: -20px; top: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
         .hero-label { font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px; }
@@ -88,7 +73,6 @@
         .stat-card h3 { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
         .stat-card .value { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
 
-        /* Panels & Forms */
         .panel { background: var(--surface); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
         .panel-header { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         
@@ -102,7 +86,6 @@
         
         .profit-input { font-weight: 700; color: var(--secondary) !important; background: var(--secondary-light) !important; border-color: transparent !important; }
 
-        /* Buttons */
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border: none; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .btn:active { transform: scale(0.97); }
         .btn svg { width: 18px; height: 18px; }
@@ -114,7 +97,6 @@
         .btn-icon { padding: 8px; border-radius: var(--radius-sm); border: none; background: var(--bg-color); cursor: pointer; color: var(--text-muted); display: inline-flex; }
         .w-full { width: 100%; }
 
-        /* Lists & Tables (Mobile First View) */
         .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-direction: column; }
         .search-box { position: relative; width: 100%; }
         .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
@@ -135,12 +117,10 @@
         .trx-profit { font-size: 0.8rem; font-weight: 500; }
         .trx-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
-        /* Print Specific Card UI */
         .print-list-card { flex-direction: row; align-items: center; cursor: pointer; border: 2px solid transparent; }
         .print-list-card:hover { border-color: var(--primary-light); background: var(--primary-light); }
         .print-list-card .btn-print-action { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
 
-        /* Floating Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px; padding-bottom: var(--safe-bottom); z-index: 100; box-shadow: var(--shadow-float); }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; border: none; background: none; width: 25%; cursor: pointer; transition: color 0.2s; }
         .nav-item svg { width: 24px; height: 24px; transition: transform 0.2s; }
@@ -148,7 +128,6 @@
         .nav-item.active { color: var(--primary); }
         .nav-item.active svg { transform: translateY(-2px); stroke-width: 2.5px; }
 
-        /* Modals */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; padding: 20px; }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.3s; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
@@ -157,7 +136,6 @@
         .modal-body { padding: 24px; overflow-y: auto; }
         .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; }
 
-        /* Indomaret Receipt Preview Style */
         .receipt-preview { background: #fff; padding: 20px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; color: #000; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; border: 1px solid #ddd; }
         .receipt-preview::before, .receipt-preview::after { content: ''; position: absolute; left: 0; right: 0; height: 6px; background-size: 12px 10px; }
         .receipt-preview::before { top: -6px; background-image: radial-gradient(circle at 6px 0, transparent 6px, #fff 7px); }
@@ -174,11 +152,9 @@
         .rp-total-area { font-size: 14px; margin-top: 8px; }
         .rp-footer { font-size: 11px; text-align: center; margin-top: 15px; line-height: 1.4; }
 
-        /* Toast */
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg); opacity: 0; transition: all 0.3s; z-index: 1050; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Print Area CSS (Hidden usually, active only when window.print()) */
         #actual-print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -201,7 +177,6 @@
             @page { size: 58mm auto; margin: 0; }
         }
 
-        /* Desktop Adjustments */
         @media (min-width: 769px) {
             .bottom-nav { display: none; }
             body { padding-bottom: 40px; }
@@ -392,7 +367,6 @@
     </div>
 </div>
 
-<!-- Bottom Navigation (Mobile) -->
 <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchPage('page-home')" id="nav-home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -412,7 +386,6 @@
     </button>
 </nav>
 
-<!-- Print Preview Modal -->
 <div class="modal-overlay" id="print-modal">
     <div class="modal">
         <div class="modal-header">
@@ -422,11 +395,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <!-- Indomaret Style Preview -->
-            <div class="receipt-preview" id="receipt-preview-content">
-                <!-- Injected via JS -->
-            </div>
-            
+            <div class="receipt-preview" id="receipt-preview-content"></div>
             <button class="btn btn-primary w-full" id="btn-do-print" style="margin-top: 10px;">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 Cetak Sekarang
@@ -435,13 +404,11 @@
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     <span id="toast-msg">Sukses!</span>
 </div>
 
-<!-- Actual Print Area (Indomaret Format) -->
 <div id="actual-print-area">
     <div class="pr-center pr-title" id="pr-store"></div>
     <div class="pr-center pr-address" id="pr-address"></div>
@@ -480,7 +447,18 @@
 </div>
 
 <script>
-    // State
+    // Register Service Worker untuk PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Menggunakan path /Jurnal/sw.js sesuai struktur GitHub Anda
+        navigator.serviceWorker.register('/Jurnal/sw.js').then(reg => {
+          console.log('SW terdaftar: ', reg.scope);
+        }).catch(err => {
+          console.log('SW gagal: ', err);
+        });
+      });
+    }
+
     let transactions = JSON.parse(localStorage.getItem('waypayDataPro')) || [];
     let appSettings = JSON.parse(localStorage.getItem('waypaySettingsPro')) || { 
         storeName: 'WAY PAY STORE', 
@@ -489,16 +467,13 @@
     let editingId = null;
     let currentPrintTrx = null;
 
-    // Icons
     const serviceIcons = {
         "Pulsa All Operator": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
         "Paket Data Internet": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/></svg>`,
         "default": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`
     };
 
-    // Init
     window.onload = () => {
-        // Load Settings to UI
         document.getElementById('set-store-name').value = appSettings.storeName;
         document.getElementById('set-store-address').value = appSettings.storeAddress;
         
@@ -507,7 +482,6 @@
         refreshAllData();
     };
 
-    // --- NAVIGATION SPA LOGIC ---
     function switchPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -527,7 +501,6 @@
         window.scrollTo(0,0);
     }
 
-    // --- CORE LOGIC ---
     const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
     const formatDateStr = (dateStr) => {
         const d = new Date(dateStr);
@@ -570,7 +543,6 @@
         renderPrintList();
     };
 
-    // --- DASHBOARD ---
     const updateDashboard = () => {
         const now = new Date();
         let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
@@ -602,7 +574,6 @@
         document.getElementById('dash-profit-month').textContent = formatRp(mProfit);
     };
 
-    // --- UI RENDER (CARD LIST) ---
     const generateCardHTML = (trx, isPrintMode = false) => {
         const icon = serviceIcons[trx.type] || serviceIcons['default'];
         
@@ -677,7 +648,6 @@
         list.innerHTML = sorted.map(t => generateCardHTML(t, true)).join('');
     };
 
-    // --- FORM ACTIONS ---
     const handleFormSubmit = (e) => {
         e.preventDefault();
         
@@ -753,7 +723,6 @@
         }
     };
 
-    // --- PRINT PREVIEW ---
     const formatAddressBreak = (text) => text.replace(/\n/g, '<br>');
 
     const openPrintPreview = (id) => {
@@ -822,7 +791,6 @@
         closePrintModal();
     });
 
-    // --- SETTINGS ---
     const saveSettings = () => {
         appSettings.storeName = document.getElementById('set-store-name').value || 'WAY PAY STORE';
         appSettings.storeAddress = document.getElementById('set-store-address').value || 'Indonesia';

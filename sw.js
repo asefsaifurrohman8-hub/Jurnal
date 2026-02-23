@@ -1,9 +1,9 @@
 const CACHE_NAME = 'waypay-v1';
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './1.png'
+  '/Jurnal/',
+  '/Jurnal/index.html',
+  '/Jurnal/manifest.json',
+  '/Jurnal/1.png'
 ];
 
 self.addEventListener('install', event => {
