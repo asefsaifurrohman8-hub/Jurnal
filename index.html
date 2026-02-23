@@ -3,783 +3,857 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ASR Trading Journal</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <title>WAY PAY - Sistem Pencatatan Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* NEW Color System (Light & Playful) */
-            --primary: #4C6FFF;       /* Biru Cerah Utama */
-            --primary-soft: #E8EEFF;
-            --secondary: #FFAD33;     /* Oranye Aksen */
-            --secondary-soft: #FFF6E5;
-            --bg-body: #F8F9FE;       /* Background Abu Sangat Muda */
-            --bg-card: #FFFFFF;       /* Kartu Putih Bersih */
-            --bg-input: #F2F4F8;      /* Input Abu Muda */
-            
-            --text-main: #1F2937;     /* Teks Gelap */
-            --text-muted: #9CA3AF;    /* Teks Abu-abu */
-            
-            --success: #10B981;
+            /* WAY PAY Brand Colors */
+            --primary: #4F46E5;
+            --primary-dark: #3730A3;
+            --primary-light: #E0E7FF;
+            --secondary: #10B981;
+            --secondary-light: #D1FAE5;
+            --bg-color: #F8FAFC;
+            --surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
             --danger: #EF4444;
-            
-            /* Dimensions & Shadows */
-            --radius-xl: 32px;
+            --danger-light: #FEE2E2;
             --radius-lg: 24px;
             --radius-md: 16px;
-            --shadow-soft: 0 8px 24px rgba(149, 157, 165, 0.08);
-            --shadow-hover: 0 12px 28px rgba(149, 157, 165, 0.15);
+            --radius-sm: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-float: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            
+            /* Safe Area for Notches */
+            --safe-bottom: max(50px, env(safe-area-inset-bottom));
         }
 
-        /* RESET & BASE */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        #app {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-body);
-            position: relative;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 110px; /* Space for Bottom Nav */
-        }
-
-        /* --- NEW HEADER STYLE --- */
-        .header {
-            padding: 30px 24px 20px 24px;
-            background: transparent;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-soft);
-            color: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .user-text h2 {
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1.2;
-            color: var(--text-main);
-        }
-        .user-text p {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .header-action-btn {
-            background: var(--bg-card);
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-soft);
-            cursor: pointer;
-            color: var(--text-main);
-        }
-
-        /* --- WELCOME BANNER (Total Balance) --- */
-        .welcome-banner {
-            margin: 0 24px 25px 24px;
-            background: var(--secondary-soft); /* Creamy background */
-            padding: 30px;
-            border-radius: var(--radius-xl);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Placeholder for illustration */
-        .welcome-banner::after {
-            content: '💰';
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            font-size: 80px;
-            opacity: 0.2;
-            z-index: 0;
-        }
-
-        .balance-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--secondary);
-            margin-bottom: 8px;
-            position: relative; z-index: 1;
-        }
-        .balance-val {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--text-main);
-            position: relative; z-index: 1;
-        }
-
-        /* --- STATS GRID (Replaces Floating Stats) --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 Kolom */
-            gap: 16px;
-            padding: 0 24px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--shadow-soft);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            transition: transform 0.2s;
-        }
-        .stat-card:active { transform: scale(0.98); }
-
-        .stat-icon-wrap {
-            width: 40px; height: 40px;
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .stat-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;}
-        .stat-num { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* Fake Progress Bar for visual flair */
-        .progress-bar-bg { width: 100%; height: 6px; background: var(--bg-input); border-radius: 10px; overflow:hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 10px; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom)); }
+        
+        /* Typography */
+        h1, h2, h3, h4 { font-weight: 600; }
+        
+        /* Layout */
+        .app-container { max-width: 800px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* Header */
+        header { background: var(--surface); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+        .logo-area { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary), #818CF8); color: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
+        
+        /* Pages */
+        .page { display: none; padding: 20px; flex-direction: column; gap: 20px; animation: fadeIn 0.3s ease; }
+        .page.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Dashboard Cards */
+        .dashboard-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: var(--radius-lg); padding: 24px; color: white; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+        .dashboard-hero::after { content: ''; position: absolute; right: -20px; top: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .hero-label { font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px; }
+        .hero-value { font-size: 2.5rem; font-weight: 700; margin-top: 8px; letter-spacing: -1px; }
+        .hero-footer { margin-top: 20px; display: flex; gap: 24px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 16px; }
+        .hero-stat p { font-size: 0.8rem; opacity: 0.8; }
+        .hero-stat h4 { font-size: 1.1rem; font-weight: 600; }
 
-        /* --- CONTENT AREAS --- */
-        .content {
-            padding: 0 24px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .stat-card { background: var(--surface); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px; }
+        .stat-card .icon-wrapper { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .bg-blue-light { background: var(--primary-light); color: var(--primary); }
+        .bg-green-light { background: var(--secondary-light); color: var(--secondary); }
+        .stat-card h3 { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .stat-card .value { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            margin-top: 10px;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
+        /* Panels & Forms */
+        .panel { background: var(--surface); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+        .panel-header { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-color); transition: all 0.2s; outline: none; color: var(--text-main); }
+        .form-control:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
+        .form-control[readonly] { opacity: 0.7; cursor: not-allowed; }
+        select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+        
+        .profit-input { font-weight: 700; color: var(--secondary) !important; background: var(--secondary-light) !important; border-color: transparent !important; }
 
-        /* NEW CARD STYLE */
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-soft);
-            border: none;
-        }
+        /* Buttons */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border: none; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn:active { transform: scale(0.97); }
+        .btn svg { width: 18px; height: 18px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-danger { background: var(--danger-light); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-icon { padding: 8px; border-radius: var(--radius-sm); border: none; background: var(--bg-color); cursor: pointer; color: var(--text-muted); display: inline-flex; }
+        .w-full { width: 100%; }
 
-        /* AI Card Specific styling */
-        .ai-card {
-            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-            color: white;
-        }
-        .ai-card .ai-text { color: rgba(255,255,255,0.9); }
+        /* Lists & Tables (Mobile First View) */
+        .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-direction: column; }
+        .search-box { position: relative; width: 100%; }
+        .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
+        .search-box input { padding-left: 40px; }
+        
+        .trx-list { display: flex; flex-direction: column; gap: 12px; }
+        .trx-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s; }
+        .trx-card:active { transform: scale(0.98); }
+        .trx-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+        .trx-id { font-size: 0.8rem; font-family: 'Space Mono', monospace; font-weight: 600; color: var(--text-main); }
+        .trx-date { font-size: 0.75rem; color: var(--text-muted); }
+        .trx-body { display: flex; justify-content: space-between; align-items: center; }
+        .trx-info { display: flex; flex-direction: column; gap: 4px; }
+        .trx-type { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .trx-ket { font-size: 0.85rem; color: var(--text-muted); }
+        .trx-amounts { text-align: right; }
+        .trx-total { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+        .trx-profit { font-size: 0.8rem; font-weight: 500; }
+        .trx-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
-        /* CHART BARS (Adapted for light mode) */
-        .chart-container {
-            height: 150px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 10px;
-            padding-top: 20px;
-        }
-        .bar-wrap {
-            flex: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        .bar {
-            width: 100%;
-            border-radius: 8px;
-            min-height: 8px;
-        }
-        .bar.win { background: var(--success); }
-        .bar.loss { background: var(--danger); opacity: 0.7; }
-        .bar-date { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-top: 8px; }
+        /* Print Specific Card UI */
+        .print-list-card { flex-direction: row; align-items: center; cursor: pointer; border: 2px solid transparent; }
+        .print-list-card:hover { border-color: var(--primary-light); background: var(--primary-light); }
+        .print-list-card .btn-print-action { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
 
-        /* FORM INPUTS (Light & Clean) */
-        .form-group { margin-bottom: 24px; }
-        .form-label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-main);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .input-box {
-            width: 100%;
-            background: var(--bg-input);
-            border: 2px solid transparent;
-            border-radius: var(--radius-md);
-            padding: 18px;
-            color: var(--text-main);
-            font-family: 'Poppins', sans-serif;
-            font-size: 15px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        .input-box:focus {
-            border-color: var(--primary);
-            background: var(--bg-card);
-        }
-        .input-box::placeholder { color: #BDC3C7; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        select.input-box { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 20px; }
+        /* Floating Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px; padding-bottom: var(--safe-bottom); z-index: 100; box-shadow: var(--shadow-float); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; border: none; background: none; width: 25%; cursor: pointer; transition: color 0.2s; }
+        .nav-item svg { width: 24px; height: 24px; transition: transform 0.2s; }
+        .nav-item span { font-size: 0.75rem; font-weight: 500; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active svg { transform: translateY(-2px); stroke-width: 2.5px; }
 
-        .btn-main {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 20px;
-            border-radius: var(--radius-xl);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 10px 25px -5px rgba(76, 111, 255, 0.5);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-main:active { transform: scale(0.98); box-shadow: none; }
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; padding: 20px; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.3s; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 24px; overflow-y: auto; }
+        .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; }
 
-        /* HISTORY LIST (Light Cards) */
-        .trade-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 18px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-soft);
-        }
-        .trade-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .icon-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .trade-details h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
-        .trade-details span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-        .trade-right { text-align: right; }
-        .pnl-val { font-size: 15px; font-weight: 800; display: block; }
-        .pnl-percent { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        /* Indomaret Receipt Preview Style */
+        .receipt-preview { background: #fff; padding: 20px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; color: #000; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; border: 1px solid #ddd; }
+        .receipt-preview::before, .receipt-preview::after { content: ''; position: absolute; left: 0; right: 0; height: 6px; background-size: 12px 10px; }
+        .receipt-preview::before { top: -6px; background-image: radial-gradient(circle at 6px 0, transparent 6px, #fff 7px); }
+        .receipt-preview::after { bottom: -6px; background-image: radial-gradient(circle at 6px 10px, transparent 6px, #fff 7px); }
+        
+        .rp-center { text-align: center; }
+        .rp-bold { font-weight: bold; }
+        .rp-title { font-size: 16px; margin-bottom: 4px; }
+        .rp-address { font-size: 11px; margin-bottom: 10px; line-height: 1.2; }
+        .rp-divider { border-top: 1px dashed #000; margin: 10px 0; }
+        .rp-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .rp-col-left { text-align: left; }
+        .rp-col-right { text-align: right; }
+        .rp-total-area { font-size: 14px; margin-top: 8px; }
+        .rp-footer { font-size: 11px; text-align: center; margin-top: 15px; line-height: 1.4; }
 
-        /* NAV BOTTOM (Clean White) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: var(--bg-card);
-            padding: 15px 30px 25px 30px; /* Extra padding bottom for iOS swipe indicator */
-            border-top-left-radius: var(--radius-xl);
-            border-top-right-radius: var(--radius-xl);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
-        }
-        .nav-item {
-            color: #D1D5DB; /* Inactive gray */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px; height: 50px;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-        .nav-item svg { width: 26px; height: 26px; stroke-width: 2.5px; }
-        .nav-item.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 5px 15px rgba(76, 111, 255, 0.4);
-        }
-        /* Hide labels in this design style for cleaner look */
-        .nav-item span { display: none; }
+        /* Toast */
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg); opacity: 0; transition: all 0.3s; z-index: 1050; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* PAGES LOGIC */
-        .page { display: none; animation: fadeUp 0.3s ease; }
-        .page.active { display: block; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Print Area CSS (Hidden usually, active only when window.print()) */
+        #actual-print-area { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #actual-print-area, #actual-print-area * { visibility: visible; }
+            body { background: white; margin: 0; padding: 0; }
+            
+            #actual-print-area {
+                position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm;
+                font-family: 'Courier New', Courier, monospace; color: #000; font-size: 12px; line-height: 1.3;
+            }
+            .pr-center { text-align: center; }
+            .pr-title { font-size: 16px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
+            .pr-address { font-size: 10px; margin-bottom: 8px; }
+            .pr-divider { border-top: 1px dashed #000; margin: 6px 0; }
+            .pr-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+            .pr-bold { font-weight: bold; }
+            .pr-total { font-size: 14px; margin-top: 4px; }
+            .pr-footer { text-align: center; font-size: 10px; margin-top: 12px; }
+            
+            @page { size: 58mm auto; margin: 0; }
         }
 
-        /* PROFILE SPECIFIC */
-        .profile-header {
-            text-align: center; margin-bottom: 30px;
+        /* Desktop Adjustments */
+        @media (min-width: 769px) {
+            .bottom-nav { display: none; }
+            body { padding-bottom: 40px; }
+            header { border-radius: 0 0 var(--radius-lg) var(--radius-lg); margin-bottom: 20px; }
+            .desktop-tabs { display: flex; gap: 16px; }
+            .desktop-tabs button { background: none; border: none; padding: 8px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: var(--radius-md); }
+            .desktop-tabs button.active { background: var(--primary-light); color: var(--primary); }
+            .trx-list { display: grid; grid-template-columns: repeat(2, 1fr); }
+            .print-list { grid-template-columns: 1fr !important; }
         }
-        .profile-avatar-big {
-            width: 90px; height: 90px;
-            background: var(--primary-soft);
-            color: var(--primary);
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; font-weight: 800;
-            box-shadow: var(--shadow-soft);
+        @media (max-width: 768px) {
+            .desktop-tabs { display: none; }
         }
-        .profile-menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 2px solid var(--bg-body);
-            font-weight: 600;
-        }
-        .profile-menu-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-<div id="app">
+<div class="app-container">
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+            </div>
+            WAY PAY
+        </div>
+        <div class="desktop-tabs">
+            <button onclick="switchPage('page-home')" class="d-tab active" id="d-tab-home">Beranda</button>
+            <button onclick="switchPage('page-history')" class="d-tab" id="d-tab-history">Riwayat</button>
+            <button onclick="switchPage('page-print')" class="d-tab" id="d-tab-print">Cetak Struk</button>
+            <button onclick="switchPage('page-settings')" class="d-tab" id="d-tab-settings">Pengaturan</button>
+        </div>
+    </header>
 
+    <!-- PAGE: BERANDA (HOME) -->
     <div id="page-home" class="page active">
-        <div class="header">
-            <div class="header-top">
-                <div class="user-info">
-                    <div class="user-avatar">ASR</div>
-                    <div class="user-text">
-                        <p>Hello,</p>
-                        <h2>Asef Saifurrohman</h2>
-                    </div>
+        <div class="dashboard-hero">
+            <div class="hero-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Total Profit Bulan Ini
+            </div>
+            <div class="hero-value" id="dash-profit-month">Rp 0</div>
+            <div class="hero-footer">
+                <div class="hero-stat">
+                    <p>Omset Bulan Ini</p>
+                    <h4 id="dash-omset-month">Rp 0</h4>
                 </div>
-                <div class="header-action-btn" onclick="goToProfile()">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <div class="hero-stat">
+                    <p>Periode Tgl</p>
+                    <h4>18 - 17</h4>
                 </div>
             </div>
-        </div>
-
-        <div class="welcome-banner">
-            <div class="balance-label">Total Keuntungan Anda</div>
-            <div class="balance-val" id="display-pnl">Rp 0</div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon-wrap" style="background: #E0F2FE; color: #0EA5E9;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <div class="icon-wrapper bg-blue-light">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 </div>
-                <div class="stat-title">Win Rate</div>
-                <div class="stat-num" id="stat-winrate">0%</div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: #0EA5E9;" id="prog-winrate"></div></div>
+                <h3>Omset Hari Ini</h3>
+                <div class="value" id="dash-omset-today">Rp 0</div>
             </div>
-            
             <div class="stat-card">
-                <div class="stat-icon-wrap" style="background: var(--secondary-soft); color: var(--secondary);">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                <div class="icon-wrapper bg-green-light">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                 </div>
-                <div class="stat-title">Total Trades</div>
-                <div class="stat-num" id="stat-trades">0</div>
-                 <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%; background: var(--secondary);"></div></div>
-            </div>
-             <div class="stat-card" style="grid-column: span 2;">
-                <div class="stat-icon-wrap" style="background: #FEE2E2; color: var(--danger);">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                </div>
-                <div class="stat-title">Emosi Terburuk</div>
-                <div class="stat-num" id="stat-emotion" style="color: var(--danger)">-</div>
+                <h3>Profit Hari Ini</h3>
+                <div class="value text-success" id="dash-profit-today">Rp 0</div>
             </div>
         </div>
 
-        <div class="content">
-            <div class="card ai-card">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                    <div style="background:rgba(255,255,255,0.2); padding:6px; border-radius:8px;">
-                        <svg width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 16a1 1 0 1 1 1-1 1 1 0 0 1-1 1zm1-5.45V14a1 1 0 0 1-2 0v-2.55a1.5 1.5 0 0 1 1-1.45 2 2 0 1 0-2-2"/></svg>
+        <div class="panel" id="form-section">
+            <div class="panel-header" id="form-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Catat Transaksi
+            </div>
+            <form id="trx-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group" style="display:none;">
+                        <input type="text" id="trx-id" class="form-control" readonly required>
                     </div>
-                    <span style="font-size:16px; font-weight:700; color:white;">Evaluasi AI</span>
+                    <div class="form-group">
+                        <label>Tanggal & Waktu</label>
+                        <input type="datetime-local" id="trx-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Layanan</label>
+                        <select id="trx-type" class="form-control" required>
+                            <option value="">Pilih Layanan...</option>
+                            <option value="Pulsa All Operator">Pulsa All Operator</option>
+                            <option value="Paket Data Internet">Paket Data Internet</option>
+                            <option value="Top Up E-Wallet">Top Up E-Wallet</option>
+                            <option value="E-Money / Kartu Toll">E-Money / Kartu Toll</option>
+                            <option value="Voucher Game Online">Voucher Game Online</option>
+                            <option value="Pembayaran Tagihan">Pembayaran Tagihan</option>
+                            <option value="Transfer Digital">Transfer Digital</option>
+                            <option value="Tarik Tunai Bank">Tarik Tunai Bank</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nominal / Tujuan</label>
+                        <input type="text" id="trx-nominal" class="form-control" placeholder="Cth: 50rb / 0812xxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga Modal (Rp)</label>
+                        <input type="number" id="trx-modal" class="form-control" min="0" step="1" required oninput="calculateProfit()">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Tagihan / Jual (Rp)</label>
+                        <input type="number" id="trx-jual" class="form-control" min="0" step="1" required oninput="calculateProfit()">
+                    </div>
+                    <div class="form-group">
+                        <label>Keuntungan (Rp)</label>
+                        <input type="number" id="trx-profit" class="form-control profit-input" readonly required>
+                    </div>
                 </div>
-                <p id="ai-text" class="ai-text" style="font-size:14px; line-height:1.6; font-weight:500;">
-                    Data belum cukup. AI akan aktif setelah Anda memasukkan API Key di Profil dan memiliki minimal 3 data trading.
-                </p>
-            </div>
-
-            <div class="section-header">
-                <div class="section-title">Grafik Performa 7 Hari</div>
-            </div>
-            <div class="card">
-                <div class="chart-container" id="chart-render">
-                    </div>
-            </div>
+                <div style="margin-top: 20px; display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none; flex:1;" onclick="cancelEdit()">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit" style="flex:2;">Simpan Transaksi</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div id="page-add" class="page">
-        <div class="header">
-            <div class="header-top">
-                 <h2 style="font-size:22px; font-weight:700;">Input Transaksi</h2>
-            </div>
-        </div>
-        
-        <div class="content">
-            <div class="card">
-                <form id="form-trade">
-                    <div class="form-group">
-                        <label class="form-label">Pilih Pasar</label>
-                        <select id="inp-market" class="input-box">
-                            <option value="SAHAM">Saham (IDR)</option>
-                            <option value="KRIPTO">Kripto (USDT)</option>
-                        </select>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div class="form-group">
-                            <label class="form-label">Kode Ticker</label>
-                            <input type="text" id="inp-ticker" class="input-box" placeholder="Contoh: BBCA" style="text-transform:uppercase" required>
-                        </div>
-                         <div class="form-group">
-                            <label class="form-label">Jumlah (Lot/Koin)</label>
-                            <input type="number" step="any" id="inp-qty" class="input-box" placeholder="0" required>
-                        </div>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div class="form-group">
-                            <label class="form-label">Harga Beli</label>
-                            <input type="number" step="any" id="inp-buy" class="input-box" placeholder="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Harga Jual</label>
-                            <input type="number" step="any" id="inp-sell" class="input-box" placeholder="0" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Emosi Saat Entry</label>
-                        <select id="inp-emotion" class="input-box">
-                            <option value="Tenang">😌 Tenang (Sesuai Plan)</option>
-                            <option value="FOMO">😨 FOMO (Takut Ketinggalan)</option>
-                            <option value="Ragu">🤔 Ragu-ragu</option>
-                            <option value="Serakah">🤑 Serakah (Ingin Cepat)</option>
-                            <option value="Marah">😡 Marah (Revenge Trade)</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-main">Simpan ke Jurnal</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <!-- PAGE: RIWAYAT (HISTORY) -->
     <div id="page-history" class="page">
-        <div class="header">
-             <div class="header-top">
-                 <h2 style="font-size:22px; font-weight:700;">Riwayat Trading</h2>
-            </div>
-        </div>
-        <div class="content">
-            <div id="history-list">
+        <div class="panel">
+            <div class="panel-header">Riwayat Transaksi</div>
+            <div class="filters">
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-history" class="form-control" placeholder="Cari ID, Nomor..." oninput="renderHistory()">
                 </div>
+            </div>
+            <div class="trx-list" id="history-list">
+                <!-- Data injected here -->
+            </div>
         </div>
     </div>
 
-    <div id="page-profile" class="page">
-        <div class="header">
-             </div>
-        <div class="content">
-            <div class="card">
-                <div class="profile-header">
-                    <div class="profile-avatar-big">ASR</div>
-                    <h3 style="font-size:20px; font-weight:700; margin-bottom: 4px;">Asef Saifurrohman</h3>
-                    <p style="font-size:14px; color:var(--text-muted); font-weight:500;">Professional Trader</p>
+    <!-- PAGE: CETAK STRUK (PRINT) -->
+    <div id="page-print" class="page">
+        <div class="panel">
+            <div class="panel-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Pilih Transaksi Dicetak
+            </div>
+            <div class="filters">
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-print" class="form-control" placeholder="Cari transaksi untuk dicetak..." oninput="renderPrintList()">
                 </div>
-                
-                <div class="profile-menu-item" style="flex-direction: column; align-items: flex-start; gap:10px;">
-                    <span style="font-size:15px;">API Key Groq (AI Intelligence)</span>
-                    <div style="display:flex; gap:10px; width:100%;">
-                        <input type="password" id="inp-apikey" class="input-box" placeholder="Tempel API Key di sini..." style="font-size:13px; padding:14px;">
-                         <button onclick="saveKey()" style="padding:0 20px; background:var(--primary); color:white; border:none; border-radius:var(--radius-md); font-weight:600; cursor:pointer;">Simpan</button>
-                    </div>
-                </div>
+            </div>
+            <div class="trx-list print-list" id="print-list">
+                <!-- Data injected here -->
+            </div>
+        </div>
+    </div>
 
-                <div class="profile-menu-item">
-                    <span style="font-size:15px; color:var(--danger);">Hapus Semua Data Jurnal</span>
-                    <button onclick="clearAll()" style="background:var(--danger); color:white; border:none; padding:10px 16px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; box-shadow: 0 5px 15px -3px rgba(239, 68, 68, 0.4);">Hapus Data</button>
-                </div>
+    <!-- PAGE: PENGATURAN (SETTINGS) -->
+    <div id="page-settings" class="page">
+        <div class="panel">
+            <div class="panel-header">Profil & Pengaturan Toko</div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Nama Toko (Tampil di Struk)</label>
+                <input type="text" id="set-store-name" class="form-control" placeholder="WAY PAY Store">
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label>Alamat Toko (Tampil di Struk)</label>
+                <textarea id="set-store-address" class="form-control" rows="3" placeholder="Jl. Raya Kemerdekaan No. 45&#10;Jakarta Selatan"></textarea>
+            </div>
+            <button class="btn btn-primary w-full" onclick="saveSettings()">Simpan Pengaturan</button>
+            
+            <div style="margin: 32px 0 24px; border-top: 1px solid var(--border);"></div>
+            
+            <div class="form-group">
+                <label>Export Data Laporan</label>
+                <button class="btn btn-secondary w-full" onclick="exportCSV()">Unduh File CSV</button>
             </div>
             
-            <div class="card">
-                <div class="section-title" style="margin-bottom:16px; font-size:16px;">Trading Rules Saya</div>
-                <ul id="rules-list" style="padding-left:20px; font-size:14px; color:var(--text-main); line-height:1.8; font-weight:500;">
-                    <li>Maksimal risiko 2% per transaksi.</li>
-                    <li>Tidak trading jika kondisi emosi tidak stabil.</li>
-                    <li>Selalu pasang Stop Loss sebelum entry.</li>
-                </ul>
+            <div style="margin: 24px 0; border-top: 1px solid var(--border);"></div>
+            
+            <div class="form-group">
+                <label class="text-danger font-bold">Zona Bahaya</label>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Hapus seluruh riwayat permanen.</p>
+                <button class="btn btn-danger w-full" onclick="promptResetData()">Reset Semua Data</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="navTo('home', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('page-home')" id="nav-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Beranda</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('page-history')" id="nav-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Riwayat</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('page-print')" id="nav-print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Cetak</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('page-settings')" id="nav-settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Profil</span>
+    </button>
+</nav>
+
+<!-- Print Preview Modal -->
+<div class="modal-overlay" id="print-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Preview Struk</h3>
+            <button class="close-btn" onclick="closePrintModal()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
-        <div class="nav-item" onclick="navTo('add', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </div>
-        <div class="nav-item" onclick="navTo('history', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </div>
-        <div class="nav-item" onclick="navTo('profile', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <div class="modal-body">
+            <!-- Indomaret Style Preview -->
+            <div class="receipt-preview" id="receipt-preview-content">
+                <!-- Injected via JS -->
+            </div>
+            
+            <button class="btn btn-primary w-full" id="btn-do-print" style="margin-top: 10px;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Cetak Sekarang
+            </button>
         </div>
     </div>
+</div>
 
+<!-- Toast -->
+<div class="toast" id="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toast-msg">Sukses!</span>
+</div>
+
+<!-- Actual Print Area (Indomaret Format) -->
+<div id="actual-print-area">
+    <div class="pr-center pr-title" id="pr-store"></div>
+    <div class="pr-center pr-address" id="pr-address"></div>
+    <div class="pr-divider"></div>
+    <div class="pr-row">
+        <span>Tgl : <span id="pr-date"></span></span>
+    </div>
+    <div class="pr-row">
+        <span>TRX : <span id="pr-id"></span></span>
+    </div>
+    <div class="pr-divider"></div>
+    
+    <div style="margin-bottom:2px;" id="pr-type"></div>
+    <div style="margin-bottom:6px; font-size:11px;" id="pr-nominal"></div>
+    
+    <div class="pr-row">
+        <span>Jumlah</span>
+        <span id="pr-modal"></span>
+    </div>
+    <div class="pr-row">
+        <span>Admin</span>
+        <span id="pr-profit"></span>
+    </div>
+    <div class="pr-divider"></div>
+    <div class="pr-row pr-bold pr-total">
+        <span>TOTAL</span>
+        <span id="pr-jual"></span>
+    </div>
+    <div class="pr-divider"></div>
+    
+    <div class="pr-footer">
+        *** TERIMA KASIH ***<br>
+        Belanja Puas, Harga Pas<br>
+        Simpan struk ini sebagai bukti
+    </div>
 </div>
 
 <script>
-    // --- DATABASE (Tidak Berubah) ---
-    let trades = JSON.parse(localStorage.getItem('db_trades')) || [];
-    let apiKey = localStorage.getItem('db_apikey') || '';
+    // State
+    let transactions = JSON.parse(localStorage.getItem('waypayDataPro')) || [];
+    let appSettings = JSON.parse(localStorage.getItem('waypaySettingsPro')) || { 
+        storeName: 'WAY PAY STORE', 
+        storeAddress: 'Jl. Merdeka No.1\nJakarta' 
+    };
+    let editingId = null;
+    let currentPrintTrx = null;
 
-    // --- INIT ---
-    document.addEventListener('DOMContentLoaded', () => {
-        if(apiKey) document.getElementById('inp-apikey').value = apiKey;
-        renderAll();
-    });
+    // Icons
+    const serviceIcons = {
+        "Pulsa All Operator": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+        "Paket Data Internet": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/></svg>`,
+        "default": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`
+    };
 
-    // --- NAVIGATION ---
-    function navTo(pageId, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + pageId).classList.add('active');
+    // Init
+    window.onload = () => {
+        // Load Settings to UI
+        document.getElementById('set-store-name').value = appSettings.storeName;
+        document.getElementById('set-store-address').value = appSettings.storeAddress;
         
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(el) el.classList.add('active');
+        generateNewId();
+        setTodayDate();
+        refreshAllData();
+    };
 
-        if(pageId === 'home') renderAll();
-        if(pageId === 'history') renderHistoryList();
+    // --- NAVIGATION SPA LOGIC ---
+    function switchPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // Remove active state from mobile nav
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // Remove active state from desktop tabs
+        document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+        
+        // Show target page
+        document.getElementById(pageId).classList.add('active');
+        
+        // Update nav active states
+        const targetNavId = 'nav-' + pageId.replace('page-', '');
+        const targetTabId = 'd-tab-' + pageId.replace('page-', '');
+        
+        if(document.getElementById(targetNavId)) document.getElementById(targetNavId).classList.add('active');
+        if(document.getElementById(targetTabId)) document.getElementById(targetTabId).classList.add('active');
+        
+        // Auto refresh specific views
+        if(pageId === 'page-history') renderHistory();
+        if(pageId === 'page-print') renderPrintList();
+        
         window.scrollTo(0,0);
     }
 
-    function goToProfile() {
-        navTo('profile', document.querySelectorAll('.nav-item')[3]);
-    }
+    // --- CORE LOGIC ---
+    const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+    const formatDateStr = (dateStr) => {
+        const d = new Date(dateStr);
+        return d.toLocaleString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).replace(/\./g, ':');
+    };
 
-    // --- CORE LOGIC (Tidak Berubah) ---
-    function formatMoney(n, type) {
-        if(type === 'KRIPTO') return '$ ' + n.toFixed(2);
-        return 'Rp ' + Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
+    const generateNewId = () => {
+        const now = new Date();
+        const id = 'WP' + now.getFullYear().toString().slice(-2) + 
+                  String(now.getMonth()+1).padStart(2,'0') + 
+                  String(now.getDate()).padStart(2,'0') + 
+                  String(now.getHours()).padStart(2,'0') + 
+                  String(now.getMinutes()).padStart(2,'0') + 
+                  String(now.getSeconds()).padStart(2,'0');
+        document.getElementById('trx-id').value = id;
+    };
 
-    document.getElementById('form-trade').addEventListener('submit', (e) => {
-        e.preventDefault();
+    const setTodayDate = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('trx-date').value = now.toISOString().slice(0, 16);
+    };
+
+    const calculateProfit = () => {
+        const modal = parseFloat(document.getElementById('trx-modal').value) || 0;
+        const jual = parseFloat(document.getElementById('trx-jual').value) || 0;
+        document.getElementById('trx-profit').value = jual - modal;
+    };
+
+    const showToast = (message) => {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    };
+
+    const refreshAllData = () => {
+        updateDashboard();
+        renderHistory();
+        renderPrintList();
+    };
+
+    // --- DASHBOARD ---
+    const updateDashboard = () => {
+        const now = new Date();
+        // Month Logic 18-17
+        let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+        let sM = d >= 18 ? m : m - 1, sY = y;
+        if(sM < 0) { sM = 11; sY--; }
+        let eM = sM + 1, eY = sY;
+        if(eM > 11) { eM = 0; eY++; }
+        const startM = new Date(sY, sM, 18, 0,0,0);
+        const endM = new Date(eY, eM, 17, 23,59,59);
+
+        let tOmset = 0, tProfit = 0, mOmset = 0, mProfit = 0;
+
+        transactions.forEach(trx => {
+            const tDate = new Date(trx.date);
+            const j = parseFloat(trx.jual);
+            const p = parseFloat(trx.profit);
+
+            if (tDate.toDateString() === now.toDateString()) {
+                tOmset += j; tProfit += p;
+            }
+            if (tDate >= startM && tDate <= endM) {
+                mOmset += j; mProfit += p;
+            }
+        });
+
+        document.getElementById('dash-omset-today').textContent = formatRp(tOmset);
+        document.getElementById('dash-profit-today').textContent = formatRp(tProfit);
+        document.getElementById('dash-omset-month').textContent = formatRp(mOmset);
+        document.getElementById('dash-profit-month').textContent = formatRp(mProfit);
+    };
+
+    // --- UI RENDER (CARD LIST) ---
+    const generateCardHTML = (trx, isPrintMode = false) => {
+        const icon = serviceIcons[trx.type] || serviceIcons['default'];
         
-        const mkt = document.getElementById('inp-market').value;
-        const tick = document.getElementById('inp-ticker').value.toUpperCase();
-        const qty = parseFloat(document.getElementById('inp-qty').value);
-        const buy = parseFloat(document.getElementById('inp-buy').value);
-        const sell = parseFloat(document.getElementById('inp-sell').value);
-        const emo = document.getElementById('inp-emotion').value;
-        
-        const mult = mkt === 'SAHAM' ? 100 : 1;
-        const pnl = (sell - buy) * (qty * mult);
-        const percent = ((sell - buy) / buy) * 100;
-
-        const newTrade = {
-            id: Date.now(),
-            date: new Date().toISOString(),
-            mkt, tick, qty, buy, sell, emo, pnl, percent,
-            win: pnl > 0
-        };
-
-        trades.unshift(newTrade);
-        localStorage.setItem('db_trades', JSON.stringify(trades));
-        
-        e.target.reset();
-        navTo('home', document.querySelectorAll('.nav-item')[0]);
-    });
-
-    // --- RENDERERS (Updated styles) ---
-    function renderAll() {
-        // 1. Stats
-        const totalPnl = trades.reduce((a, b) => a + b.pnl, 0);
-        const winCount = trades.filter(t => t.win).length;
-        const wr = trades.length ? Math.round((winCount / trades.length) * 100) : 0;
-        
-        const losses = trades.filter(t => !t.win);
-        let worstEmo = '-';
-        if(losses.length) {
-            const map = {};
-            losses.forEach(t => map[t.emotion] = (map[t.emotion]||0)+1);
-            worstEmo = Object.keys(map).sort((a,b)=>map[b]-map[a])[0] || losses[0].emo;
+        if (isPrintMode) {
+            return `
+            <div class="trx-card print-list-card" onclick="openPrintPreview('${trx.id}')">
+                <div style="flex:1;">
+                    <div class="trx-id" style="margin-bottom:4px;">${trx.id} <span style="font-weight:normal; color:var(--text-muted); font-size:0.75rem;">• ${formatDateStr(trx.date)}</span></div>
+                    <div class="trx-type" style="font-size:0.9rem;">${trx.type}</div>
+                    <div class="trx-ket">${trx.nominal}</div>
+                </div>
+                <div class="btn-print-action">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                </div>
+            </div>`;
         }
 
-        document.getElementById('display-pnl').innerText = formatMoney(totalPnl, 'SAHAM');
-        document.getElementById('stat-winrate').innerText = wr + '%';
-        document.getElementById('prog-winrate').style.width = wr + '%'; // Update progress bar width
-        document.getElementById('stat-trades').innerText = trades.length;
-        document.getElementById('stat-emotion').innerText = worstEmo;
+        return `
+        <div class="trx-card">
+            <div class="trx-header">
+                <span class="trx-id">${trx.id}</span>
+                <span class="trx-date">${formatDateStr(trx.date)}</span>
+            </div>
+            <div class="trx-body">
+                <div class="trx-info">
+                    <span class="trx-type"><span style="color:var(--primary)">${icon}</span> ${trx.type}</span>
+                    <span class="trx-ket">${trx.nominal}</span>
+                </div>
+                <div class="trx-amounts">
+                    <div class="trx-total">${formatRp(trx.jual)}</div>
+                    <div class="trx-profit ${trx.profit >= 0 ? 'text-success' : 'text-danger'}">Profit: ${formatRp(trx.profit)}</div>
+                </div>
+            </div>
+            <div class="trx-actions">
+                <button class="btn-icon" onclick="editTransaction('${trx.id}')" title="Edit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="btn-icon" onclick="deleteTransaction('${trx.id}')" title="Hapus" style="color:var(--danger)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </div>
+        </div>`;
+    };
 
-        // 2. Charts (Style update)
-        const chartBox = document.getElementById('chart-render');
-        chartBox.innerHTML = '';
-        const last7 = trades.slice(0, 7).reverse();
-        const maxVal = Math.max(...last7.map(t => Math.abs(t.pnl))) || 100;
-
-        last7.forEach(t => {
-            const h = Math.max(15, (Math.abs(t.pnl) / maxVal) * 100);
-            const col = document.createElement('div');
-            col.className = 'bar-wrap';
-            // Updated styling for bars
-            col.innerHTML = `
-                <div class="bar ${t.win ? 'win' : 'loss'}" style="height:${h}%; box-shadow: 0 4px 10px ${t.win ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.2)'}"></div>
-                <span class="bar-date">${t.tick.substr(0,3)}</span>
-            `;
-            chartBox.appendChild(col);
-        });
-
-        // 3. Trigger AI
-        runAI(wr, worstEmo, totalPnl);
-    }
-
-    function renderHistoryList() {
+    const renderHistory = () => {
+        const keyword = document.getElementById('search-history').value.toLowerCase();
         const list = document.getElementById('history-list');
-        list.innerHTML = '';
         
-        trades.forEach((t, i) => {
-            const dateStr = new Date(t.date).toLocaleDateString('id-ID', {day:'numeric', month:'short'});
-            const el = document.createElement('div');
-            el.className = 'trade-row';
-            // Updated colors for light mode
-            const bgIcon = t.win ? '#D1FAE5' : '#FEE2E2';
-            const colorIcon = t.win ? 'var(--success)' : 'var(--danger)';
-
-            el.innerHTML = `
-                <div class="trade-left">
-                    <div class="icon-circle" style="background:${bgIcon}; color:${colorIcon}">
-                        ${t.win ? 'W' : 'L'}
-                    </div>
-                    <div class="trade-details">
-                        <h4>${t.tick} <span style="font-size:11px; opacity:0.8; background:var(--bg-input); padding:2px 6px; border-radius:6px; font-weight:600;">${t.mkt}</span></h4>
-                        <span>${dateStr} • ${t.emo}</span>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <span class="pnl-val" style="color:${colorIcon}">${t.win?'+':''}${formatMoney(t.pnl, t.mkt)}</span>
-                    <span class="pnl-percent">${t.percent.toFixed(2)}%</span>
-                    <div onclick="delTrade(${i})" style="font-size:11px; color:var(--text-muted); margin-top:6px; cursor:pointer; font-weight:600;">Hapus</div>
-                </div>
-            `;
-            list.appendChild(el);
-        });
-    }
-
-    // --- AI LOGIC (Tidak Berubah) ---
-    async function runAI(wr, emo, pnl) {
-        const aiBox = document.getElementById('ai-text');
-        if(trades.length < 3) return;
-        if(!apiKey) {
-            aiBox.innerHTML = `<b>Mode Simulasi:</b> Performa Anda ${wr}%. Waspadai emosi <b>${emo}</b>. Masukkan API Key untuk analisis.`;
+        const filtered = transactions.filter(t => t.id.toLowerCase().includes(keyword) || t.nominal.toLowerCase().includes(keyword));
+        const sorted = filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        if(sorted.length === 0) {
+            list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted)">Tidak ada data ditemukan.</div>`;
             return;
         }
-        const prompt = `Analisis singkat (max 20 kata) untuk trader ASR: Winrate ${wr}%, PnL ${pnl}, Emosi terburuk: ${emo}. Bahasa santai, suportif, dan tegas.`;
-        try {
-            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
-                body: JSON.stringify({messages: [{role: "user", content: prompt}], model: "llama3-8b-8192"})
-            });
-            const data = await res.json();
-            if(data.choices) aiBox.innerHTML = `<b style="color:white">Groq AI:</b> "${data.choices[0].message.content}"`;
-        } catch(e) {
-            aiBox.innerHTML = "Gagal terhubung ke AI. Cek Key.";
-        }
-    }
+        
+        list.innerHTML = sorted.map(t => generateCardHTML(t, false)).join('');
+    };
 
-    // --- ACTIONS ---
-    function saveKey() {
-        const k = document.getElementById('inp-apikey').value.trim();
-        if(k) {
-            localStorage.setItem('db_apikey', k);
-            apiKey = k;
-            alert('API Key Disimpan!');
-            renderAll();
+    const renderPrintList = () => {
+        const keyword = document.getElementById('search-print').value.toLowerCase();
+        const list = document.getElementById('print-list');
+        
+        const filtered = transactions.filter(t => t.id.toLowerCase().includes(keyword) || t.nominal.toLowerCase().includes(keyword));
+        const sorted = filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        if(sorted.length === 0) {
+            list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted)">Tidak ada transaksi untuk dicetak.</div>`;
+            return;
         }
-    }
+        
+        list.innerHTML = sorted.map(t => generateCardHTML(t, true)).join('');
+    };
 
-    function clearAll() {
-        if(confirm('Hapus SEMUA data?')) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
+    // --- FORM ACTIONS ---
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        
+        const trxData = {
+            id: document.getElementById('trx-id').value,
+            date: document.getElementById('trx-date').value,
+            type: document.getElementById('trx-type').value,
+            nominal: document.getElementById('trx-nominal').value,
+            modal: parseFloat(document.getElementById('trx-modal').value),
+            jual: parseFloat(document.getElementById('trx-jual').value),
+            profit: parseFloat(document.getElementById('trx-profit').value)
+        };
 
-    function delTrade(i) {
-        if(confirm('Hapus log ini?')) {
-            trades.splice(i, 1);
-            localStorage.setItem('db_trades', JSON.stringify(trades));
-            renderHistoryList();
-            renderAll();
+        if (editingId) {
+            const idx = transactions.findIndex(t => t.id === editingId);
+            if (idx !== -1) transactions[idx] = trxData;
+            showToast('Transaksi Diperbarui');
+            cancelEdit();
+            switchPage('page-history');
+        } else {
+            transactions.push(trxData);
+            showToast('Transaksi Disimpan');
+            document.getElementById('trx-form').reset();
+            generateNewId();
+            setTodayDate();
+            refreshAllData();
+            
+            // Ask to print immediately
+            if(confirm("Transaksi berhasil disimpan. Cetak struk sekarang?")) {
+                switchPage('page-print');
+                openPrintPreview(trxData.id);
+            }
         }
-    }
+        
+        localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
+    };
+
+    const editTransaction = (id) => {
+        const trx = transactions.find(t => t.id === id);
+        if(!trx) return;
+        editingId = id;
+        
+        document.getElementById('form-title').innerHTML = `Edit Transaksi`;
+        document.getElementById('btn-submit').innerHTML = `Update Transaksi`;
+        document.getElementById('btn-cancel-edit').style.display = "block";
+
+        document.getElementById('trx-id').value = trx.id;
+        document.getElementById('trx-date').value = trx.date;
+        document.getElementById('trx-type').value = trx.type;
+        document.getElementById('trx-nominal').value = trx.nominal;
+        document.getElementById('trx-modal').value = trx.modal;
+        document.getElementById('trx-jual').value = trx.jual;
+        document.getElementById('trx-profit').value = trx.profit;
+        
+        switchPage('page-home');
+    };
+
+    const cancelEdit = () => {
+        editingId = null;
+        document.getElementById('form-title').innerHTML = `Catat Transaksi`;
+        document.getElementById('btn-submit').innerHTML = `Simpan Transaksi`;
+        document.getElementById('btn-cancel-edit').style.display = "none";
+        document.getElementById('trx-form').reset();
+        generateNewId();
+        setTodayDate();
+    };
+
+    const deleteTransaction = (id) => {
+        if(confirm('Hapus transaksi permanen?')) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
+            refreshAllData();
+            showToast('Dihapus');
+        }
+    };
+
+    // --- PRINT PREVIEW (INDOMARET STYLE) ---
+    const formatAddressBreak = (text) => text.replace(/\n/g, '<br>');
+
+    const openPrintPreview = (id) => {
+        const trx = transactions.find(t => t.id === id);
+        if(!trx) return;
+        currentPrintTrx = trx;
+
+        // Construct HTML for Modal Preview
+        const previewHTML = `
+            <div class="rp-center rp-bold rp-title">${appSettings.storeName}</div>
+            <div class="rp-center rp-address">${formatAddressBreak(appSettings.storeAddress)}</div>
+            <div class="rp-divider"></div>
+            <div class="rp-row">
+                <span class="rp-col-left">Tgl : ${formatDateStr(trx.date)}</span>
+            </div>
+            <div class="rp-row">
+                <span class="rp-col-left">TRX : ${trx.id}</span>
+            </div>
+            <div class="rp-divider"></div>
+            
+            <div style="margin-bottom:2px;">${trx.type}</div>
+            <div style="font-size:11px; margin-bottom:8px;">${trx.nominal}</div>
+            
+            <div class="rp-row">
+                <span class="rp-col-left">Jumlah</span>
+                <span class="rp-col-right">${formatRp(trx.modal)}</span>
+            </div>
+            <div class="rp-row">
+                <span class="rp-col-left">Admin</span>
+                <span class="rp-col-right">${formatRp(trx.profit)}</span>
+            </div>
+            <div class="rp-divider"></div>
+            <div class="rp-row rp-bold rp-total-area">
+                <span class="rp-col-left">TOTAL</span>
+                <span class="rp-col-right">${formatRp(trx.jual)}</span>
+            </div>
+            <div class="rp-divider"></div>
+            
+            <div class="rp-footer">
+                *** TERIMA KASIH ***<br>
+                Belanja Puas, Harga Pas<br>
+                Simpan struk ini sebagai bukti
+            </div>
+        `;
+        
+        document.getElementById('receipt-preview-content').innerHTML = previewHTML;
+        document.getElementById('print-modal').classList.add('active');
+
+        // Setup the actual hidden print area
+        document.getElementById('pr-store').textContent = appSettings.storeName;
+        document.getElementById('pr-address').innerHTML = formatAddressBreak(appSettings.storeAddress);
+        document.getElementById('pr-date').textContent = formatDateStr(trx.date);
+        document.getElementById('pr-id').textContent = trx.id;
+        document.getElementById('pr-type').textContent = trx.type;
+        document.getElementById('pr-nominal').textContent = trx.nominal;
+        document.getElementById('pr-modal').textContent = formatRp(trx.modal);
+        document.getElementById('pr-profit').textContent = formatRp(trx.profit);
+        document.getElementById('pr-jual').textContent = formatRp(trx.jual);
+    };
+
+    const closePrintModal = () => {
+        document.getElementById('print-modal').classList.remove('active');
+        currentPrintTrx = null;
+    };
+
+    // Execute Print
+    document.getElementById('btn-do-print').addEventListener('click', () => {
+        window.print();
+        closePrintModal();
+    });
+
+    // --- SETTINGS ---
+    const saveSettings = () => {
+        appSettings.storeName = document.getElementById('set-store-name').value || 'WAY PAY STORE';
+        appSettings.storeAddress = document.getElementById('set-store-address').value || 'Indonesia';
+        localStorage.setItem('waypaySettingsPro', JSON.stringify(appSettings));
+        showToast('Pengaturan Disimpan');
+    };
+
+    const promptResetData = () => {
+        const code = Math.floor(1000 + Math.random() * 9000);
+        const input = prompt(`Ketik kode berikut untuk konfirmasi hapus: ${code}`);
+        if(input === String(code)) {
+            transactions = [];
+            localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
+            refreshAllData();
+            showToast('Data Direset');
+        } else if (input !== null) {
+            alert('Kode salah!');
+        }
+    };
+
+    const exportCSV = () => {
+        if(transactions.length === 0) return showToast('Tidak ada data');
+        const headers = ['ID', 'Tanggal', 'Jenis Layanan', 'Keterangan', 'Modal', 'Admin', 'Total Jual'];
+        const csvRows = [headers.join(',')];
+        const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        sorted.forEach(t => {
+            csvRows.push([
+                t.id, t.date, `"${t.type}"`, `"${t.nominal}"`, t.modal, t.profit, t.jual
+            ].join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url; link.download = `WAYPAY_${new Date().getTime()}.csv`;
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    };
 </script>
 </body>
 </html>
