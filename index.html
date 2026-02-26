@@ -1,834 +1,292 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WAY PAY - Sistem Pencatatan Digital</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>Kasir WAY PAY</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #eef2f3;
+        padding: 15px;
+        margin: 0;
+    }
+    .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    input, select {
+        width: 100%;
+        padding: 12px;
+        margin: 6px 0 12px 0;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-family: inherit;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+    label {
+        font-size: 13px;
+        font-weight: bold;
+        color: #333;
+    }
+    button {
+        width: 100%;
+        padding: 14px;
+        border: 0;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 8px;
+    }
+    .btn-generate { background: #2c3e50; color: white; }
+    .btn-print { background: #2980b9; color: white; }
+    .btn-reset { background: #e74c3c; color: white; }
     
-    <!-- PWA Setup dengan Path yang Benar -->
-    <link rel="manifest" href="/Jurnal/manifest.json">
-    <meta name="theme-color" content="#4F46E5">
-    <link rel="apple-touch-icon" href="/Jurnal/1.png">
-    
-    <!-- Fallback Meta PWA Safari -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="WAY PAY">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="msapplication-navbutton-color" content="#4F46E5">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5;
-            --primary-dark: #3730A3;
-            --primary-light: #E0E7FF;
-            --secondary: #10B981;
-            --secondary-light: #D1FAE5;
-            --bg-color: #F8FAFC;
-            --surface: #FFFFFF;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --danger: #EF4444;
-            --danger-light: #FEE2E2;
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --radius-sm: 8px;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-            --shadow-float: 0 -4px 20px rgba(0, 0, 0, 0.08);
-            --safe-bottom: max(50px, env(safe-area-inset-bottom));
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom)); }
-        
-        h1, h2, h3, h4 { font-weight: 600; }
-        .app-container { max-width: 800px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        
-        header { background: var(--surface); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
-        .logo-area { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
-        .logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary), #818CF8); color: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
-        
-        .page { display: none; padding: 20px; flex-direction: column; gap: 20px; animation: fadeIn 0.3s ease; }
-        .page.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .dashboard-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: var(--radius-lg); padding: 24px; color: white; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
-        .dashboard-hero::after { content: ''; position: absolute; right: -20px; top: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-        .hero-label { font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px; }
-        .hero-value { font-size: 2.5rem; font-weight: 700; margin-top: 8px; letter-spacing: -1px; }
-        .hero-footer { margin-top: 20px; display: flex; gap: 24px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 16px; }
-        .hero-stat p { font-size: 0.8rem; opacity: 0.8; }
-        .hero-stat h4 { font-size: 1.1rem; font-weight: 600; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .stat-card { background: var(--surface); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px; }
-        .stat-card .icon-wrapper { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .bg-blue-light { background: var(--primary-light); color: var(--primary); }
-        .bg-green-light { background: var(--secondary-light); color: var(--secondary); }
-        .stat-card h3 { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
-        .stat-card .value { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
-
-        .panel { background: var(--surface); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-        .panel-header { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
-        .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-color); transition: all 0.2s; outline: none; color: var(--text-main); }
-        .form-control:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
-        .form-control[readonly] { opacity: 0.7; cursor: not-allowed; }
-        select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
-        
-        .profit-input { font-weight: 700; color: var(--secondary) !important; background: var(--secondary-light) !important; border-color: transparent !important; }
-
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border: none; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn:active { transform: scale(0.97); }
-        .btn svg { width: 18px; height: 18px; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
-        .btn-danger { background: var(--danger-light); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: white; }
-        .btn-icon { padding: 8px; border-radius: var(--radius-sm); border: none; background: var(--bg-color); cursor: pointer; color: var(--text-muted); display: inline-flex; }
-        .w-full { width: 100%; }
-
-        .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-direction: column; }
-        .search-box { position: relative; width: 100%; }
-        .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
-        .search-box input { padding-left: 40px; }
-        
-        .trx-list { display: flex; flex-direction: column; gap: 12px; }
-        .trx-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s; }
-        .trx-card:active { transform: scale(0.98); }
-        .trx-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
-        .trx-id { font-size: 0.8rem; font-family: 'Space Mono', monospace; font-weight: 600; color: var(--text-main); }
-        .trx-date { font-size: 0.75rem; color: var(--text-muted); }
-        .trx-body { display: flex; justify-content: space-between; align-items: center; }
-        .trx-info { display: flex; flex-direction: column; gap: 4px; }
-        .trx-type { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
-        .trx-ket { font-size: 0.85rem; color: var(--text-muted); }
-        .trx-amounts { text-align: right; }
-        .trx-total { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
-        .trx-profit { font-size: 0.8rem; font-weight: 500; }
-        .trx-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-
-        .print-list-card { flex-direction: row; align-items: center; cursor: pointer; border: 2px solid transparent; }
-        .print-list-card:hover { border-color: var(--primary-light); background: var(--primary-light); }
-        .print-list-card .btn-print-action { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px; padding-bottom: var(--safe-bottom); z-index: 100; box-shadow: var(--shadow-float); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; border: none; background: none; width: 25%; cursor: pointer; transition: color 0.2s; }
-        .nav-item svg { width: 24px; height: 24px; transition: transform 0.2s; }
-        .nav-item span { font-size: 0.75rem; font-weight: 500; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active svg { transform: translateY(-2px); stroke-width: 2.5px; }
-
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; padding: 20px; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.3s; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-overlay.active .modal { transform: translateY(0); }
-        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 24px; overflow-y: auto; }
-        .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; }
-
-        .receipt-preview { background: #fff; padding: 20px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; color: #000; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; border: 1px solid #ddd; }
-        .receipt-preview::before, .receipt-preview::after { content: ''; position: absolute; left: 0; right: 0; height: 6px; background-size: 12px 10px; }
-        .receipt-preview::before { top: -6px; background-image: radial-gradient(circle at 6px 0, transparent 6px, #fff 7px); }
-        .receipt-preview::after { bottom: -6px; background-image: radial-gradient(circle at 6px 10px, transparent 6px, #fff 7px); }
-        
-        .rp-center { text-align: center; }
-        .rp-bold { font-weight: bold; }
-        .rp-title { font-size: 16px; margin-bottom: 4px; }
-        .rp-address { font-size: 11px; margin-bottom: 10px; line-height: 1.2; }
-        .rp-divider { border-top: 1px dashed #000; margin: 10px 0; }
-        .rp-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .rp-col-left { text-align: left; }
-        .rp-col-right { text-align: right; }
-        .rp-total-area { font-size: 14px; margin-top: 8px; }
-        .rp-footer { font-size: 11px; text-align: center; margin-top: 15px; line-height: 1.4; }
-
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg); opacity: 0; transition: all 0.3s; z-index: 1050; }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-        #actual-print-area { display: none; }
-        @media print {
-            body * { visibility: hidden; }
-            #actual-print-area, #actual-print-area * { visibility: visible; }
-            body { background: white; margin: 0; padding: 0; }
-            
-            #actual-print-area {
-                position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm;
-                font-family: 'Courier New', Courier, monospace; color: #000; font-size: 12px; line-height: 1.3;
-            }
-            .pr-center { text-align: center; }
-            .pr-title { font-size: 16px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
-            .pr-address { font-size: 10px; margin-bottom: 8px; }
-            .pr-divider { border-top: 1px dashed #000; margin: 6px 0; }
-            .pr-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
-            .pr-bold { font-weight: bold; }
-            .pr-total { font-size: 14px; margin-top: 4px; }
-            .pr-footer { text-align: center; font-size: 10px; margin-top: 12px; }
-            
-            @page { size: 58mm auto; margin: 0; }
-        }
-
-        @media (min-width: 769px) {
-            .bottom-nav { display: none; }
-            body { padding-bottom: 40px; }
-            header { border-radius: 0 0 var(--radius-lg) var(--radius-lg); margin-bottom: 20px; }
-            .desktop-tabs { display: flex; gap: 16px; }
-            .desktop-tabs button { background: none; border: none; padding: 8px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: var(--radius-md); }
-            .desktop-tabs button.active { background: var(--primary-light); color: var(--primary); }
-            .trx-list { display: grid; grid-template-columns: repeat(2, 1fr); }
-            .print-list { grid-template-columns: 1fr !important; }
-        }
-        @media (max-width: 768px) {
-            .desktop-tabs { display: none; }
-        }
-    </style>
+    #out {
+        white-space: pre; 
+        font-family: 'Courier New', Courier, monospace;
+        background: #fdfdfd;
+        border: 1px dashed #999;
+        padding: 15px;
+        margin-top: 10px;
+        font-size: 13px;
+        line-height: 1.4;
+        overflow-x: auto;
+    }
+    .title {
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+    .small { font-size: 12px; color: #666; font-family: monospace; }
+    .riwayat-item { border-bottom: 1px dashed #ddd; padding: 10px 0; }
+</style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <div class="logo-area">
-            <div class="logo-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-            </div>
-            WAY PAY
-        </div>
-        <div class="desktop-tabs">
-            <button onclick="switchPage('page-home')" class="d-tab active" id="d-tab-home">Beranda</button>
-            <button onclick="switchPage('page-history')" class="d-tab" id="d-tab-history">Riwayat</button>
-            <button onclick="switchPage('page-print')" class="d-tab" id="d-tab-print">Cetak Struk</button>
-            <button onclick="switchPage('page-settings')" class="d-tab" id="d-tab-settings">Pengaturan</button>
-        </div>
-    </header>
+<div class="card">
+    <div class="title">🧾 WAY PAY</div>
 
-    <!-- PAGE: BERANDA (HOME) -->
-    <div id="page-home" class="page active">
-        <div class="dashboard-hero">
-            <div class="hero-label">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                Total Profit Bulan Ini
-            </div>
-            <div class="hero-value" id="dash-profit-month">Rp 0</div>
-            <div class="hero-footer">
-                <div class="hero-stat">
-                    <p>Omset Bulan Ini</p>
-                    <h4 id="dash-omset-month">Rp 0</h4>
-                </div>
-                <div class="hero-stat">
-                    <p>Periode Tgl</p>
-                    <h4>18 - 17</h4>
-                </div>
-            </div>
-        </div>
+    <label>Layanan</label>
+    <select id="layanan" onchange="aturForm()">
+        <option value="Pulsa">Pulsa</option>
+        <option value="Paket Data">Paket Data</option>
+        <option value="Token Listrik">Token Listrik PLN</option>
+        <option value="Top Up Ewallet">Top Up E-Wallet</option>
+        <option value="Top Up Game">Top Up Game Online</option>
+        <option value="Tarik Tunai">Tarik Tunai</option>
+    </select>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="icon-wrapper bg-blue-light">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </div>
-                <h3>Omset Hari Ini</h3>
-                <div class="value" id="dash-omset-today">Rp 0</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon-wrapper bg-green-light">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                </div>
-                <h3>Profit Hari Ini</h3>
-                <div class="value text-success" id="dash-profit-today">Rp 0</div>
-            </div>
-        </div>
+    <label>Nama Produk / Detail</label>
+    <input id="produk" placeholder="Cth: Telkomsel 50rb / Saldo Dana">
+    
+    <label>Nomor Tujuan / ID Pelanggan</label>
+    <input id="tujuan" placeholder="Cth: 081234567890">
 
-        <div class="panel" id="form-section">
-            <div class="panel-header" id="form-title">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                Catat Transaksi
-            </div>
-            <form id="trx-form" onsubmit="handleFormSubmit(event)">
-                <div class="form-grid">
-                    <div class="form-group" style="display:none;">
-                        <input type="text" id="trx-id" class="form-control" readonly required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal & Waktu</label>
-                        <input type="datetime-local" id="trx-date" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Jenis Layanan</label>
-                        <select id="trx-type" class="form-control" required>
-                            <option value="">Pilih Layanan...</option>
-                            <option value="Pulsa All Operator">Pulsa All Operator</option>
-                            <option value="Paket Data Internet">Paket Data Internet</option>
-                            <option value="Top Up E-Wallet">Top Up E-Wallet</option>
-                            <option value="E-Money / Kartu Toll">E-Money / Kartu Toll</option>
-                            <option value="Voucher Game Online">Voucher Game Online</option>
-                            <option value="Pembayaran Tagihan">Pembayaran Tagihan</option>
-                            <option value="Transfer Digital">Transfer Digital</option>
-                            <option value="Tarik Tunai Bank">Tarik Tunai Bank</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nominal / Tujuan</label>
-                        <input type="text" id="trx-nominal" class="form-control" placeholder="Cth: 50rb / 0812xxx" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Modal (Rp)</label>
-                        <input type="number" id="trx-modal" class="form-control" min="0" step="1" required oninput="calculateProfit()">
-                    </div>
-                    <div class="form-group">
-                        <label>Total Tagihan / Jual (Rp)</label>
-                        <input type="number" id="trx-jual" class="form-control" min="0" step="1" required oninput="calculateProfit()">
-                    </div>
-                    <div class="form-group">
-                        <label>Keuntungan (Rp)</label>
-                        <input type="number" id="trx-profit" class="form-control profit-input" readonly required>
-                    </div>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 12px;">
-                    <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none; flex:1;" onclick="cancelEdit()">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="btn-submit" style="flex:2;">Simpan Transaksi</button>
-                </div>
-            </form>
-        </div>
+    <!-- Kolom Token (Muncul jika pilih Token Listrik) -->
+    <div id="grupToken" style="display: none;">
+        <label style="color: #d35400;">Nomor Token / SN</label>
+        <input id="token" placeholder="Cth: 4091 8401 1234 5678">
     </div>
 
-    <!-- PAGE: RIWAYAT (HISTORY) -->
-    <div id="page-history" class="page">
-        <div class="panel">
-            <div class="panel-header">Riwayat Transaksi</div>
-            <div class="filters">
-                <div class="search-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" id="search-history" class="form-control" placeholder="Cari ID, Nomor..." oninput="renderHistory()">
-                </div>
-            </div>
-            <div class="trx-list" id="history-list">
-                <!-- Data injected here -->
-            </div>
-        </div>
+    <label>Harga (Rp)</label>
+    <input type="number" id="harga" placeholder="Cth: 50000">
+
+    <!-- Kolom Admin (Muncul jika Top Up / Tarik Tunai) -->
+    <div id="grupAdmin" style="display: none;">
+        <label>Biaya Admin (Rp)</label>
+        <input type="number" id="admin" placeholder="Cth: 2000">
     </div>
 
-    <!-- PAGE: CETAK STRUK (PRINT) -->
-    <div id="page-print" class="page">
-        <div class="panel">
-            <div class="panel-header">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Pilih Transaksi Dicetak
-            </div>
-            <div class="filters">
-                <div class="search-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" id="search-print" class="form-control" placeholder="Cari transaksi untuk dicetak..." oninput="renderPrintList()">
-                </div>
-            </div>
-            <div class="trx-list print-list" id="print-list">
-                <!-- Data injected here -->
-            </div>
-        </div>
-    </div>
+    <label>Status Transaksi</label>
+    <select id="status">
+        <option value="BERHASIL">BERHASIL</option>
+        <option value="PENDING">PENDING</option>
+        <option value="GAGAL">GAGAL</option>
+    </select>
 
-    <!-- PAGE: PENGATURAN (SETTINGS) -->
-    <div id="page-settings" class="page">
-        <div class="panel">
-            <div class="panel-header">Profil & Pengaturan Toko</div>
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label>Nama Toko (Tampil di Struk)</label>
-                <input type="text" id="set-store-name" class="form-control" placeholder="WAY PAY Store">
-            </div>
-            <div class="form-group" style="margin-bottom: 24px;">
-                <label>Alamat Toko (Tampil di Struk)</label>
-                <textarea id="set-store-address" class="form-control" rows="3" placeholder="Jl. Raya Kemerdekaan No. 45&#10;Jakarta Selatan"></textarea>
-            </div>
-            <button class="btn btn-primary w-full" onclick="saveSettings()">Simpan Pengaturan</button>
-            
-            <div style="margin: 32px 0 24px; border-top: 1px solid var(--border);"></div>
-            
-            <div class="form-group">
-                <label>Export Data Laporan</label>
-                <button class="btn btn-secondary w-full" onclick="exportCSV()">Unduh File CSV</button>
-            </div>
-            
-            <div style="margin: 24px 0; border-top: 1px solid var(--border);"></div>
-            
-            <div class="form-group">
-                <label class="text-danger font-bold">Zona Bahaya</label>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Hapus seluruh riwayat permanen.</p>
-                <button class="btn btn-danger w-full" onclick="promptResetData()">Reset Semua Data</button>
-            </div>
-        </div>
+    <!-- TOMBOL-TOMBOL UTAMA -->
+    <div style="margin-top: 15px;">
+        <button class="btn-generate" onclick="buat()">Generate Struk</button>
+        <button class="btn-print" onclick="printBT()">PRINT OTOMATIS</button>
+        <button class="btn-reset" onclick="resetForm()">Reset Form</button>
     </div>
 </div>
 
-<nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchPage('page-home')" id="nav-home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>Beranda</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('page-history')" id="nav-history">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span>Riwayat</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('page-print')" id="nav-print">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        <span>Cetak</span>
-    </button>
-    <button class="nav-item" onclick="switchPage('page-settings')" id="nav-settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Profil</span>
-    </button>
-</nav>
-
-<div class="modal-overlay" id="print-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>Preview Struk</h3>
-            <button class="close-btn" onclick="closePrintModal()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="receipt-preview" id="receipt-preview-content"></div>
-            <button class="btn btn-primary w-full" id="btn-do-print" style="margin-top: 10px;">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Cetak Sekarang
-            </button>
-        </div>
-    </div>
+<!-- PREVIEW STRUK -->
+<div class="card">
+    <div style="font-weight:bold; color:#666; font-size:14px; text-align:center;">Preview Struk</div>
+    <div id="out"></div>
 </div>
 
-<div class="toast" id="toast">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    <span id="toast-msg">Sukses!</span>
-</div>
-
-<div id="actual-print-area">
-    <div class="pr-center pr-title" id="pr-store"></div>
-    <div class="pr-center pr-address" id="pr-address"></div>
-    <div class="pr-divider"></div>
-    <div class="pr-row">
-        <span>Tgl : <span id="pr-date"></span></span>
+<!-- RIWAYAT TRANSAKSI -->
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+        <b>Riwayat Transaksi</b>
+        <button class="btn-reset" onclick="hapus()" style="width:auto; margin:0; padding:6px 12px; font-size: 12px;">Hapus</button>
     </div>
-    <div class="pr-row">
-        <span>TRX : <span id="pr-id"></span></span>
-    </div>
-    <div class="pr-divider"></div>
-    
-    <div style="margin-bottom:2px;" id="pr-type"></div>
-    <div style="margin-bottom:6px; font-size:11px;" id="pr-nominal"></div>
-    
-    <div class="pr-row">
-        <span>Jumlah</span>
-        <span id="pr-modal"></span>
-    </div>
-    <div class="pr-row">
-        <span>Admin</span>
-        <span id="pr-profit"></span>
-    </div>
-    <div class="pr-divider"></div>
-    <div class="pr-row pr-bold pr-total">
-        <span>TOTAL</span>
-        <span id="pr-jual"></span>
-    </div>
-    <div class="pr-divider"></div>
-    
-    <div class="pr-footer">
-        *** TERIMA KASIH ***<br>
-        Belanja Puas, Harga Pas<br>
-        Simpan struk ini sebagai bukti
-    </div>
+    <div id="history" class="small"></div>
 </div>
 
 <script>
-    // Register Service Worker untuk PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        // Menggunakan path /Jurnal/sw.js sesuai struktur GitHub Anda
-        navigator.serviceWorker.register('/Jurnal/sw.js').then(reg => {
-          console.log('SW terdaftar: ', reg.scope);
-        }).catch(err => {
-          console.log('SW gagal: ', err);
-        });
-      });
+// Menampilkan/Menyembunyikan Kolom Token & Admin
+function aturForm() {
+    let lay = document.getElementById("layanan").value;
+    let grupToken = document.getElementById("grupToken");
+    let grupAdmin = document.getElementById("grupAdmin");
+    
+    // Logika Token
+    if(lay === "Token Listrik") {
+        grupToken.style.display = "block";
+    } else {
+        grupToken.style.display = "none";
+        document.getElementById("token").value = ""; 
     }
 
-    let transactions = JSON.parse(localStorage.getItem('waypayDataPro')) || [];
-    let appSettings = JSON.parse(localStorage.getItem('waypaySettingsPro')) || { 
-        storeName: 'WAY PAY STORE', 
-        storeAddress: 'Jl. Merdeka No.1\nJakarta' 
-    };
-    let editingId = null;
-    let currentPrintTrx = null;
+    // Logika Admin
+    if(lay.includes("Top Up") || lay === "Tarik Tunai") {
+        grupAdmin.style.display = "block";
+    } else {
+        grupAdmin.style.display = "none";
+        document.getElementById("admin").value = ""; 
+    }
+}
 
-    const serviceIcons = {
-        "Pulsa All Operator": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
-        "Paket Data Internet": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/></svg>`,
-        "default": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`
-    };
+function formatRp(angka) {
+    return "Rp " + parseInt(angka || 0).toLocaleString('id-ID');
+}
 
-    window.onload = () => {
-        document.getElementById('set-store-name').value = appSettings.storeName;
-        document.getElementById('set-store-address').value = appSettings.storeAddress;
-        
-        generateNewId();
-        setTodayDate();
-        refreshAllData();
-    };
+function idtrx(){
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let rand = '';
+    for (let i = 0; i < 5; i++) {
+        rand += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return "WP-" + rand;
+}
 
-    function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
-        
-        document.getElementById(pageId).classList.add('active');
-        
-        const targetNavId = 'nav-' + pageId.replace('page-', '');
-        const targetTabId = 'd-tab-' + pageId.replace('page-', '');
-        
-        if(document.getElementById(targetNavId)) document.getElementById(targetNavId).classList.add('active');
-        if(document.getElementById(targetTabId)) document.getElementById(targetTabId).classList.add('active');
-        
-        if(pageId === 'page-history') renderHistory();
-        if(pageId === 'page-print') renderPrintList();
-        
-        window.scrollTo(0,0);
+function waktu(){
+    let d = new Date();
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${h}:${m}`;
+}
+
+// Menulis format struk
+function buat(){
+    let lay = document.getElementById("layanan").value;
+    let prod = document.getElementById("produk").value || "-";
+    let tuj = document.getElementById("tujuan").value || "-";
+    let tok = document.getElementById("token").value;
+    let hrg = parseInt(document.getElementById("harga").value) || 0;
+    let adm = parseInt(document.getElementById("admin").value) || 0;
+    let stat = document.getElementById("status").value;
+
+    let total = hrg + adm;
+    let trxId = idtrx();
+
+    // Spasi ditambahkan agar nama toko dan alamat ada di tengah struk
+    let teks = 
+"            WAY PAY\n" +
+"  Jl. Kp. Curug, Cibarusahkota\n" +
+"  Kec. Cibarusah, Kab. Bekasi\n" +
+"           Jawa Barat\n" +
+"--------------------------------\n" +
+"Tgl : " + waktu() + "\n" +
+"Trx : " + trxId + "\n" +
+"--------------------------------\n" +
+"Layanan : " + lay + "\n" +
+"Tujuan  : " + tuj + "\n" +
+"Detail  : " + prod + "\n";
+
+    if (tok !== "") {
+        teks += "--------------------------------\n";
+        teks += "TOKEN / SN :\n";
+        teks += tok + "\n";
     }
 
-    const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
-    const formatDateStr = (dateStr) => {
-        const d = new Date(dateStr);
-        return d.toLocaleString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).replace(/\./g, ':');
-    };
+    teks += "--------------------------------\n";
 
-    const generateNewId = () => {
-        const now = new Date();
-        const id = 'WP' + now.getFullYear().toString().slice(-2) + 
-                  String(now.getMonth()+1).padStart(2,'0') + 
-                  String(now.getDate()).padStart(2,'0') + 
-                  String(now.getHours()).padStart(2,'0') + 
-                  String(now.getMinutes()).padStart(2,'0') + 
-                  String(now.getSeconds()).padStart(2,'0');
-        document.getElementById('trx-id').value = id;
-    };
+    if (lay.includes("Top Up") || lay === "Tarik Tunai") {
+        teks += "Harga   : " + formatRp(hrg) + "\n";
+        teks += "Admin   : " + formatRp(adm) + "\n";
+    }
 
-    const setTodayDate = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        document.getElementById('trx-date').value = now.toISOString().slice(0, 16);
-    };
+    teks += "Total   : " + formatRp(total) + "\n";
+    teks += "Status  : " + stat + "\n";
+    teks += "--------------------------------\n";
+    teks += "          TERIMA KASIH\n";
 
-    const calculateProfit = () => {
-        const modal = parseFloat(document.getElementById('trx-modal').value) || 0;
-        const jual = parseFloat(document.getElementById('trx-jual').value) || 0;
-        document.getElementById('trx-profit').value = jual - modal;
-    };
+    document.getElementById("out").textContent = teks;
+    simpan(teks);
+}
 
-    const showToast = (message) => {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-msg').textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    };
+// Tombol Print Otomatis via RawBT
+function printBT(){
+    // Jika kolom preview kosong, buat struk otomatis dulu
+    if(document.getElementById("out").textContent === ""){
+        buat(); 
+    }
+    
+    let text = document.getElementById("out").textContent;
+    // Buka link URL Scheme RawBT
+    window.location.href = "rawbt:print?text=" + encodeURIComponent(text);
+}
 
-    const refreshAllData = () => {
-        updateDashboard();
-        renderHistory();
-        renderPrintList();
-    };
+// Reset semua kolom inputan
+function resetForm() {
+    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.getElementById("out").textContent = "";
+    document.getElementById("layanan").value = "Pulsa";
+    document.getElementById("status").value = "BERHASIL";
+    aturForm(); // Kembalikan kolom tersembunyi seperti semula
+}
 
-    const updateDashboard = () => {
-        const now = new Date();
-        let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
-        let sM = d >= 18 ? m : m - 1, sY = y;
-        if(sM < 0) { sM = 11; sY--; }
-        let eM = sM + 1, eY = sY;
-        if(eM > 11) { eM = 0; eY++; }
-        const startM = new Date(sY, sM, 18, 0,0,0);
-        const endM = new Date(eY, eM, 17, 23,59,59);
+function simpan(teks){
+    let data = JSON.parse(localStorage.getItem("trx") || "[]");
+    data.unshift(teks); 
+    if(data.length > 10) data.pop(); // Maksimal simpan 10 terakhir
+    localStorage.setItem("trx", JSON.stringify(data));
+    tampil();
+}
 
-        let tOmset = 0, tProfit = 0, mOmset = 0, mProfit = 0;
-
-        transactions.forEach(trx => {
-            const tDate = new Date(trx.date);
-            const j = parseFloat(trx.jual);
-            const p = parseFloat(trx.profit);
-
-            if (tDate.toDateString() === now.toDateString()) {
-                tOmset += j; tProfit += p;
-            }
-            if (tDate >= startM && tDate <= endM) {
-                mOmset += j; mProfit += p;
-            }
-        });
-
-        document.getElementById('dash-omset-today').textContent = formatRp(tOmset);
-        document.getElementById('dash-profit-today').textContent = formatRp(tProfit);
-        document.getElementById('dash-omset-month').textContent = formatRp(mOmset);
-        document.getElementById('dash-profit-month').textContent = formatRp(mProfit);
-    };
-
-    const generateCardHTML = (trx, isPrintMode = false) => {
-        const icon = serviceIcons[trx.type] || serviceIcons['default'];
-        
-        if (isPrintMode) {
-            return `
-            <div class="trx-card print-list-card" onclick="openPrintPreview('${trx.id}')">
-                <div style="flex:1;">
-                    <div class="trx-id" style="margin-bottom:4px;">${trx.id} <span style="font-weight:normal; color:var(--text-muted); font-size:0.75rem;">• ${formatDateStr(trx.date)}</span></div>
-                    <div class="trx-type" style="font-size:0.9rem;">${trx.type}</div>
-                    <div class="trx-ket">${trx.nominal}</div>
-                </div>
-                <div class="btn-print-action">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                </div>
-            </div>`;
-        }
-
-        return `
-        <div class="trx-card">
-            <div class="trx-header">
-                <span class="trx-id">${trx.id}</span>
-                <span class="trx-date">${formatDateStr(trx.date)}</span>
-            </div>
-            <div class="trx-body">
-                <div class="trx-info">
-                    <span class="trx-type"><span style="color:var(--primary)">${icon}</span> ${trx.type}</span>
-                    <span class="trx-ket">${trx.nominal}</span>
-                </div>
-                <div class="trx-amounts">
-                    <div class="trx-total">${formatRp(trx.jual)}</div>
-                    <div class="trx-profit ${trx.profit >= 0 ? 'text-success' : 'text-danger'}">Profit: ${formatRp(trx.profit)}</div>
-                </div>
-            </div>
-            <div class="trx-actions">
-                <button class="btn-icon" onclick="editTransaction('${trx.id}')" title="Edit">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button class="btn-icon" onclick="deleteTransaction('${trx.id}')" title="Hapus" style="color:var(--danger)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-            </div>
-        </div>`;
-    };
-
-    const renderHistory = () => {
-        const keyword = document.getElementById('search-history').value.toLowerCase();
-        const list = document.getElementById('history-list');
-        
-        const filtered = transactions.filter(t => t.id.toLowerCase().includes(keyword) || t.nominal.toLowerCase().includes(keyword));
-        const sorted = filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if(sorted.length === 0) {
-            list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted)">Tidak ada data ditemukan.</div>`;
-            return;
-        }
-        
-        list.innerHTML = sorted.map(t => generateCardHTML(t, false)).join('');
-    };
-
-    const renderPrintList = () => {
-        const keyword = document.getElementById('search-print').value.toLowerCase();
-        const list = document.getElementById('print-list');
-        
-        const filtered = transactions.filter(t => t.id.toLowerCase().includes(keyword) || t.nominal.toLowerCase().includes(keyword));
-        const sorted = filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if(sorted.length === 0) {
-            list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted)">Tidak ada transaksi untuk dicetak.</div>`;
-            return;
-        }
-        
-        list.innerHTML = sorted.map(t => generateCardHTML(t, true)).join('');
-    };
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        
-        const trxData = {
-            id: document.getElementById('trx-id').value,
-            date: document.getElementById('trx-date').value,
-            type: document.getElementById('trx-type').value,
-            nominal: document.getElementById('trx-nominal').value,
-            modal: parseFloat(document.getElementById('trx-modal').value),
-            jual: parseFloat(document.getElementById('trx-jual').value),
-            profit: parseFloat(document.getElementById('trx-profit').value)
-        };
-
-        if (editingId) {
-            const idx = transactions.findIndex(t => t.id === editingId);
-            if (idx !== -1) transactions[idx] = trxData;
-            showToast('Transaksi Diperbarui');
-            cancelEdit();
-            switchPage('page-history');
-        } else {
-            transactions.push(trxData);
-            showToast('Transaksi Disimpan');
-            document.getElementById('trx-form').reset();
-            generateNewId();
-            setTodayDate();
-            refreshAllData();
-            
-            if(confirm("Transaksi berhasil disimpan. Cetak struk sekarang?")) {
-                switchPage('page-print');
-                openPrintPreview(trxData.id);
-            }
-        }
-        
-        localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
-    };
-
-    const editTransaction = (id) => {
-        const trx = transactions.find(t => t.id === id);
-        if(!trx) return;
-        editingId = id;
-        
-        document.getElementById('form-title').innerHTML = `Edit Transaksi`;
-        document.getElementById('btn-submit').innerHTML = `Update Transaksi`;
-        document.getElementById('btn-cancel-edit').style.display = "block";
-
-        document.getElementById('trx-id').value = trx.id;
-        document.getElementById('trx-date').value = trx.date;
-        document.getElementById('trx-type').value = trx.type;
-        document.getElementById('trx-nominal').value = trx.nominal;
-        document.getElementById('trx-modal').value = trx.modal;
-        document.getElementById('trx-jual').value = trx.jual;
-        document.getElementById('trx-profit').value = trx.profit;
-        
-        switchPage('page-home');
-    };
-
-    const cancelEdit = () => {
-        editingId = null;
-        document.getElementById('form-title').innerHTML = `Catat Transaksi`;
-        document.getElementById('btn-submit').innerHTML = `Simpan Transaksi`;
-        document.getElementById('btn-cancel-edit').style.display = "none";
-        document.getElementById('trx-form').reset();
-        generateNewId();
-        setTodayDate();
-    };
-
-    const deleteTransaction = (id) => {
-        if(confirm('Hapus transaksi permanen?')) {
-            transactions = transactions.filter(t => t.id !== id);
-            localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
-            refreshAllData();
-            showToast('Dihapus');
-        }
-    };
-
-    const formatAddressBreak = (text) => text.replace(/\n/g, '<br>');
-
-    const openPrintPreview = (id) => {
-        const trx = transactions.find(t => t.id === id);
-        if(!trx) return;
-        currentPrintTrx = trx;
-
-        const previewHTML = `
-            <div class="rp-center rp-bold rp-title">${appSettings.storeName}</div>
-            <div class="rp-center rp-address">${formatAddressBreak(appSettings.storeAddress)}</div>
-            <div class="rp-divider"></div>
-            <div class="rp-row">
-                <span class="rp-col-left">Tgl : ${formatDateStr(trx.date)}</span>
-            </div>
-            <div class="rp-row">
-                <span class="rp-col-left">TRX : ${trx.id}</span>
-            </div>
-            <div class="rp-divider"></div>
-            
-            <div style="margin-bottom:2px;">${trx.type}</div>
-            <div style="font-size:11px; margin-bottom:8px;">${trx.nominal}</div>
-            
-            <div class="rp-row">
-                <span class="rp-col-left">Jumlah</span>
-                <span class="rp-col-right">${formatRp(trx.modal)}</span>
-            </div>
-            <div class="rp-row">
-                <span class="rp-col-left">Admin</span>
-                <span class="rp-col-right">${formatRp(trx.profit)}</span>
-            </div>
-            <div class="rp-divider"></div>
-            <div class="rp-row rp-bold rp-total-area">
-                <span class="rp-col-left">TOTAL</span>
-                <span class="rp-col-right">${formatRp(trx.jual)}</span>
-            </div>
-            <div class="rp-divider"></div>
-            
-            <div class="rp-footer">
-                *** TERIMA KASIH ***<br>
-                Belanja Puas, Harga Pas<br>
-                Simpan struk ini sebagai bukti
-            </div>
-        `;
-        
-        document.getElementById('receipt-preview-content').innerHTML = previewHTML;
-        document.getElementById('print-modal').classList.add('active');
-
-        document.getElementById('pr-store').textContent = appSettings.storeName;
-        document.getElementById('pr-address').innerHTML = formatAddressBreak(appSettings.storeAddress);
-        document.getElementById('pr-date').textContent = formatDateStr(trx.date);
-        document.getElementById('pr-id').textContent = trx.id;
-        document.getElementById('pr-type').textContent = trx.type;
-        document.getElementById('pr-nominal').textContent = trx.nominal;
-        document.getElementById('pr-modal').textContent = formatRp(trx.modal);
-        document.getElementById('pr-profit').textContent = formatRp(trx.profit);
-        document.getElementById('pr-jual').textContent = formatRp(trx.jual);
-    };
-
-    const closePrintModal = () => {
-        document.getElementById('print-modal').classList.remove('active');
-        currentPrintTrx = null;
-    };
-
-    document.getElementById('btn-do-print').addEventListener('click', () => {
-        window.print();
-        closePrintModal();
+function tampil(){
+    let data = JSON.parse(localStorage.getItem("trx") || "[]");
+    let html = "";
+    data.forEach(x => {
+        html += `<div class="riwayat-item">${x.replace(/\n/g, "<br>")}</div>`;
     });
+    document.getElementById("history").innerHTML = html;
+}
 
-    const saveSettings = () => {
-        appSettings.storeName = document.getElementById('set-store-name').value || 'WAY PAY STORE';
-        appSettings.storeAddress = document.getElementById('set-store-address').value || 'Indonesia';
-        localStorage.setItem('waypaySettingsPro', JSON.stringify(appSettings));
-        showToast('Pengaturan Disimpan');
-    };
+function hapus(){
+    if(confirm("Hapus semua riwayat transaksi?")) {
+        localStorage.removeItem("trx");
+        tampil();
+    }
+}
 
-    const promptResetData = () => {
-        const code = Math.floor(1000 + Math.random() * 9000);
-        const input = prompt(`Ketik kode berikut untuk konfirmasi hapus: ${code}`);
-        if(input === String(code)) {
-            transactions = [];
-            localStorage.setItem('waypayDataPro', JSON.stringify(transactions));
-            refreshAllData();
-            showToast('Data Direset');
-        } else if (input !== null) {
-            alert('Kode salah!');
-        }
-    };
-
-    const exportCSV = () => {
-        if(transactions.length === 0) return showToast('Tidak ada data');
-        const headers = ['ID', 'Tanggal', 'Jenis Layanan', 'Keterangan', 'Modal', 'Admin', 'Total Jual'];
-        const csvRows = [headers.join(',')];
-        const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        sorted.forEach(t => {
-            csvRows.push([
-                t.id, t.date, `"${t.type}"`, `"${t.nominal}"`, t.modal, t.profit, t.jual
-            ].join(','));
-        });
-
-        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url; link.download = `WAYPAY_${new Date().getTime()}.csv`;
-        document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    };
+// Inisialisasi awal saat web dibuka
+window.onload = function() {
+    aturForm();
+    tampil();
+};
 </script>
+
 </body>
 </html>
+
+
